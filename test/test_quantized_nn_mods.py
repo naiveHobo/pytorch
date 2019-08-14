@@ -127,7 +127,7 @@ class ModuleAPITest(QuantizationTestCase):
         self.assertEqual(qlinear.zero_point, loaded.zero_point)
 
         # Test JIT
-        self.checkScriptable(qlinear, zip([X_q], [Z_ref]), check_save_load=True)
+        self.checkScriptable(qlinear, list(zip([X_q], [Z_ref])), check_save_load=True)
 
     def test_quant_dequant_api(self):
         r = torch.tensor([[1., -1.], [1., -1.]], dtype=torch.float)
@@ -288,7 +288,7 @@ class ModuleAPITest(QuantizationTestCase):
         self.assertEqual(conv_under_test.zero_point, loaded_conv.zero_point)
 
         # JIT testing
-        self.checkScriptable(conv_under_test, zip([qX], [result_reference]), check_save_load=True)
+        self.checkScriptable(conv_under_test, list(zip([qX], [result_reference])), check_save_load=True)
 
         # Test from_float
         float_conv = torch.nn.Conv2d(in_channels=iC,
@@ -333,7 +333,7 @@ class ModuleAPITest(QuantizationTestCase):
         self.assertEqual(qX_expect, qX_hat)
 
         # JIT Testing
-        self.checkScriptable(pool_under_test, zip([X], [qX_expect]))
+        self.checkScriptable(pool_under_test, list(zip([X], [qX_expect])))
 
 if __name__ == '__main__':
     run_tests()
