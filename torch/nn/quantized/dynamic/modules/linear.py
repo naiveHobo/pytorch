@@ -62,7 +62,12 @@ class Linear(nnq.Linear):
         """
         assert type(mod) == NNLinear, 'nn.quantized.dynamic.Linear.from_float only works for nn.Linear'
         assert hasattr(mod, 'qconfig'), 'Input float module must have qconfig defined'
-        weight_observer = mod.qconfig.weight()
+        if mod.qconfig is not None and mod.qconfig.weight() is not None:
+            weight_observer = mod.qconfig.weight()
+        else:
+            from torch.quantization.observer import default_weight_observer
+            weight_observer=default_weight_observer
+
         weight_observer(mod.weight)
         wt_scale, wt_zp = weight_observer.calculate_qparams()
         qweight = torch.quantize_linear(mod.weight.float(), wt_scale, wt_zp.long().item(), torch.qint8)
